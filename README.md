@@ -13,7 +13,7 @@ As a **Music Maker**, I want to **use a wearable tracker** to **create and modif
 
 **Acceptance Criteria:**
 * Application ingests raw sensor data from a wearable tracker over *Bluetooth Low Energy* (BLE).
-* Application generates *MIDI messages* based on sensor data to create and modify audio tracks.
+* Application generates [MIDI messages](https://www.midi.org/articles-old/about-midi-part-3-midi-messages) based on sensor data to create and modify audio tracks.
 
 As a **Music Maker**, I want to **map gestures to custom instruments and audio effects** so I can **create and modify audio tracks**.
 
