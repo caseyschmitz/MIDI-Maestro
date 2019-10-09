@@ -21,12 +21,12 @@ As a **Music Maker**, I want to **map gestures to custom instruments and audio e
 * Application successfully recognizes multiple input gestures.
 * Input gestures are able to be mapped to custom instruments and audio effects.
 
-As a **Music Maker**, I want to **use an Android device as a controller** so I can **create and modify audio tracks in a *Digital Audio Workstation* (DAW)**.
+As a **Music Maker**, I want to **use an Android device as a controller** so I can **create and modify audio tracks in a Digital Audio Workstation**.
 
 **Acceptance Criteria:**
 * Application connects to a computing device as a MIDI controller.
 * Application generates MIDI messages.
-* Application sends MIDI messages to a DAW program.
+* Application sends MIDI messages to a DAW.
 
 ## Misuser Stories
 As a **Music Tamperer**, I want to **exploit MIDI-Maestro's BLE connection capabilities** to **deny availability of the application to a Music Maker**.
@@ -34,10 +34,10 @@ As a **Music Tamperer**, I want to **exploit MIDI-Maestro's BLE connection capab
 **Mitigations:**
 * Application ensures that only authorized input devices can connect via BLE.
 
-As a **Music Tamperer**, I want to **exploit MIDI-Maestro's MIDI message receiving capabilities** to **remotely execute code on a Music Maker's computing device**.
+As a **Music Tamperer**, I want to **exploit MIDI-Maestro's MIDI message receiving capabilities** to **remotely execute code on a Music Maker's DAW**.
 
 **Mitigations:**
-* Application sanitizes MIDI messages that are sent to a DAW program.
+* Application sanitizes MIDI messages that are sent to a DAW.
 
 ## High Level Design
 ![Design Diagram](https://github.com/caseyschmitz/MIDI-Maestro/blob/master/images/MIDI-Maestro_DesignDiagram.png)
@@ -71,4 +71,4 @@ MIDI-Maestro will be able to send MIDI messages to Digital Audio Workstation sof
 | Component Name | Category of Vulnerability | Issue Description | Mitigation |
 |----------------|---------------------------|-------------------|------------|
 | Gesture Classifier | Denial of Service | It may be possible to deny availability to this message-receiving component by flooding it with BLE connections. | This component should ensure that only authorized motion tracking devices can connect to the application. |
-| Digital Audio Workstation | Remote Code Execution | It may be possible to send the application a specially crafted MIDI file that allows for remote execution of code on the user's computing device. | The application should verify whether MIDI messages received from external controllers are valid. |
+| Digital Audio Workstation | Remote Code Execution | It may be possible to send the application a specially crafted MIDI file that allows for remote execution of code on the user's DAW. | The application should verify whether MIDI messages received from external controllers are valid. |
