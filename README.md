@@ -40,7 +40,7 @@ As a **Music Tamperer**, I want to **exploit MIDI-Maestro's MIDI message transmi
 * Application sanitizes MIDI messages that are sent to a DAW program.
 
 ## High Level Design
-![Design Diagram](https://github.com/caseyschmitz/MIDI-Maestro/blob/master/MIDI-Maestro_%20Design%20Diagram.png)
+![Design Diagram](https://github.com/caseyschmitz/MIDI-Maestro/blob/master/images/MIDI-Maestro_DesignDiagram.png)
 
 ## Component List
 
