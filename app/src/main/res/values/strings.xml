@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">MIDIMaestro</string>
+    <string name="okay">Okay</string>
+    <string name="dialog_failed_connection">Connection Failed</string>
+</resources>
