@@ -57,10 +57,13 @@ import bolts.Continuation;
 public class MainActivity extends AppCompatActivity implements ServiceConnection {
     private static final String LOG_TAG = "midimaestro";
 
+    //TODO build a component that allows for connections to MetaWear based on dynamic MAC
     private final String MW_MAC_ADDRESS = "E7:75:2B:2E:50:4B";
+
     private MetaWearBoard metaWearBoard;
     private Led led;
     private Accelerometer accelerometer;
+
     private AlertDialog mAlertDialog;
     private Debug debug;
     private Logging logging;
@@ -72,6 +75,7 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Initialize a graph that can be used to view sensor input
         GraphView graph = (GraphView) findViewById(R.id.graph);
         series = new LineGraphSeries<DataPoint>();
         graph.addSeries(series);
@@ -85,19 +89,12 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
         // Bind the service when the activity is created
         getApplicationContext().bindService(new Intent(this, BtleService.class), this, Context.BIND_AUTO_CREATE);
         findViewById(R.id.start_accel).setOnClickListener(v -> {
-            logging.start(false);
             accelerometer.acceleration().start();
             accelerometer.start();
         });
         findViewById(R.id.stop_accel).setOnClickListener(v -> {
             accelerometer.stop();
             accelerometer.acceleration().stop();
-
-            logging.stop();
-            logging.downloadAsync().continueWith(task -> {
-                Log.i(LOG_TAG, "Log download complete");
-                return null;
-            });
         });
         findViewById(R.id.reset_board).setOnClickListener(v -> debug.resetAsync());
     }
@@ -112,6 +109,7 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
 
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
+        // Create a connection to the MetaWear board upon service connection
         BtleService.LocalBinder serviceBinder = (BtleService.LocalBinder) service;
         BluetoothManager btManager= (BluetoothManager) getSystemService(BLUETOOTH_SERVICE);
         BluetoothDevice btDevice= btManager.getAdapter().getRemoteDevice(MW_MAC_ADDRESS);
@@ -119,6 +117,7 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
         metaWearBoard = serviceBinder.getMetaWearBoard(btDevice);
 
         metaWearBoard.connectAsync().onSuccessTask(task -> {
+            // Configure the LED to blink upon successful async connection
             led = metaWearBoard.getModule(Led.class);
             led.editPattern(Led.Color.GREEN)
                     .riseTime((short) 0)
@@ -129,11 +128,13 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
                     .lowIntensity((byte) 16)
                     .commit();
 
+            // Configure the accelerometer upon successful async connection
             accelerometer = metaWearBoard.getModule(Accelerometer.class);
             accelerometer.configure()
                     .odr(50f)
                     .commit();
 
+            // Log raw accelerometer received from the MetaWear board
             return accelerometer.acceleration().addRouteAsync(source ->
                     source.stream((Subscriber) (data, env) -> {
                         Log.i(LOG_TAG, data.value(Acceleration.class).toString());
@@ -141,6 +142,7 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
                     }));
         }).continueWith((Continuation<Route, Void>) conn_task -> {
             if (conn_task.isFaulted()) {
+                // If connection fails, log and present an AlertDialog indicating failed connection
                 Log.i(LOG_TAG, "Failed to connect.");
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setMessage(R.string.dialog_failed_connection)
@@ -148,10 +150,12 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
                         });
                 mAlertDialog = builder.create();
                 mAlertDialog.show();
+                // Disable control buttons if the connection is unsuccessful
                 findViewById(R.id.start_accel).setEnabled(false);
                 findViewById(R.id.stop_accel).setEnabled(false);
                 findViewById(R.id.reset_board).setEnabled(false);
             } else {
+                // If connection is successful, log battery status and begin playing the LED
                 Log.i(LOG_TAG, "Connected to " + metaWearBoard.getModelString());
 
                 metaWearBoard.readBatteryLevelAsync().continueWith(batt_task -> {
@@ -167,6 +171,7 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
     }
 
     private <T> void addEntry(T value) {
+        //TODO add data-points to the series that is being graphed
     }
 
 
