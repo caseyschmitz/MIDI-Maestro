@@ -36,4 +36,13 @@ Designing the mapping framework for gestures-to-instruments/effects will be alto
 ### User Story 3
 *As a Music Maker, I want to use an Android device as a controller so I can create and modify audio tracks in a Digital Audio Workstation.*
 
+This user story was designed to fit some 'stretch-goals' of this project and, naturally, should build easily onto components that have already been developed prior to its integration. Requirements of this user story are:
+
+    3.1 An ability for the application to connect to an external computing device as a MIDI controller, and use some of the settings/configurations established to create MIDI messages
+    3.2 An ability for the application to send MIDI messages to a Digital Audio Workstation program that can further process the messages
+
 #### Tasks Completed
+As these features will be delivered near the end of the development process, little work has been done thus far to realize these requirements. Initial research into Android's MIDI APIs suggests that creating MIDI messages in the application should be relatively simple, though interactions with the endpoint software could introduce challenges.
+
+#### Tasks Remaining
+Because these requirements are nearly wholly-dependent on components developed for other user stories, successfully realizing this user story relies heavily on the success of earlier satisfied requirements. Components developed for these requirements may simply act as 'add-ons' to already-existing output options (i.e. direct output through device audio) and some success can be expected in their delivery, though with likely in their minimally-viable form. This user story will not take priority over either of the preceding stories and, as such, its realization will come late in the development process.
