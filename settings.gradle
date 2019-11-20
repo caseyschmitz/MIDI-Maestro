@@ -1,0 +1,2 @@
+include ':app', ':MidiScope', ':MidiTools', ':MidiBtlePairing', ':MidiKeyboard'
+rootProject.name='MIDIMaestro'
