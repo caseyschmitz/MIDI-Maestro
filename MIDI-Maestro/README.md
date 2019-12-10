@@ -24,4 +24,5 @@
     - Processing will pause in-place upon pressing 'Pause MIDI'
     - Processing will stop and reset at the beginning of the MIDI file upon pressing 'Stop MIDI'
 - Once a MIDI file has been selected and the MetaWear sensor has begun streaming data, processing of the MIDI file can happen in real-time as the MetaWear sensor streams events from its accelerometer (#TODO).
+
 *NOTE* - More logging will be available in Logcat
