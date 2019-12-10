@@ -9,14 +9,46 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="Load File"
+        android:id="@+id/load_file" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Play Midi"
+        android:layout_toRightOf="@id/load_file"
+        android:enabled="false"
+        android:id="@+id/play_midi"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Pause Midi"
+        android:layout_toRightOf="@id/play_midi"
+        android:enabled="false"
+        android:id="@+id/pause_midi"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Stop Midi"
+        android:layout_toRightOf="@id/pause_midi"
+        android:enabled="false"
+        android:id="@+id/stop_midi"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:text="Start"
-        android:id="@+id/start_accel" />
+        android:layout_below="@id/load_file"
+        android:id="@+id/start_accel"/>
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Stop"
         android:id="@+id/stop_accel"
+        android:layout_below="@id/load_file"
         android:layout_toRightOf="@+id/start_accel"
         android:layout_alignParentStart="false" />
 
@@ -25,6 +57,7 @@
         android:layout_height="wrap_content"
         android:text="Reset"
         android:id="@+id/reset_board"
+        android:layout_below="@id/load_file"
         android:layout_toRightOf="@+id/stop_accel"
         android:layout_alignParentStart="false" />
 
@@ -32,7 +65,7 @@
         android:layout_width="wrap_content"
         android:layout_height="300dp"
         android:id="@+id/graph"
-        android:layout_below="@+id/reset_board"
+        android:layout_below="@id/start_accel"
         android:layout_alignParentStart="true"/>
 
 </RelativeLayout>

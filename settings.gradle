@@ -1,2 +1,2 @@
-include ':app', ':MidiScope', ':MidiTools', ':MidiBtlePairing', ':MidiKeyboard'
+include ':app', ':MidiDriver-1.17'
 rootProject.name='MIDIMaestro'
