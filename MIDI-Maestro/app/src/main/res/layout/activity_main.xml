@@ -36,11 +36,26 @@
         android:enabled="false"
         android:id="@+id/stop_midi"/>
 
+    <EditText
+        android:id="@+id/mac_input"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/load_file"
+        android:inputType="text" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Connect to MW"
+        android:layout_below="@id/load_file"
+        android:layout_toRightOf="@id/mac_input"
+        android:id="@+id/connect_board"/>
+
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Start"
-        android:layout_below="@id/load_file"
+        android:layout_below="@id/mac_input"
         android:enabled="false"
         android:id="@+id/start_accel"/>
 
@@ -50,7 +65,7 @@
         android:text="Stop"
         android:enabled="false"
         android:id="@+id/stop_accel"
-        android:layout_below="@id/load_file"
+        android:layout_below="@id/mac_input"
         android:layout_toRightOf="@+id/start_accel"
         android:layout_alignParentStart="false" />
 
@@ -60,7 +75,7 @@
         android:text="Reset"
         android:enabled="false"
         android:id="@+id/reset_board"
-        android:layout_below="@id/load_file"
+        android:layout_below="@id/mac_input"
         android:layout_toRightOf="@+id/stop_accel"
         android:layout_alignParentStart="false" />
 

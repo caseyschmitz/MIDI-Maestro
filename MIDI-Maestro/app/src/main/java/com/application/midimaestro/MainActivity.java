@@ -36,6 +36,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
+import android.widget.EditText;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -66,6 +67,8 @@ import org.billthefarmer.mididriver.MidiDriver;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import bolts.Continuation;
 
@@ -73,8 +76,12 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
     private static final String LOG_TAG = "midimaestro";
 
     //TODO build a component that allows for connections to MetaWear based on dynamic MAC
-    private final String MW_MAC_ADDRESS = "E7:75:2B:2E:50:4B";
+    private String MW_MAC_ADDRESS = "";
+    private EditText macInput;
 
+    private BtleService.LocalBinder serviceBinder;
+    private BluetoothManager btManager;
+    private BluetoothDevice btDevice;
     private MetaWearBoard metaWearBoard;
     private Led led;
     private Accelerometer accelerometer;
@@ -85,7 +92,7 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
     private int[] midiConfig;
     private MidiDriver mDriver;
 
-    private AlertDialog mAlertDialog;
+    //private AlertDialog mAlertDialog;
     private Debug debug;
     private Logging logging;
 
@@ -110,6 +117,13 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
         // Bind the service when the activity is created
         getApplicationContext().bindService(new Intent(this, BtleService.class), this, Context.BIND_AUTO_CREATE);
         findViewById(R.id.load_file).setOnClickListener(v -> showFileChooser());
+        findViewById(R.id.connect_board).setOnClickListener(v -> {
+            macInput = findViewById(R.id.mac_input);
+            MW_MAC_ADDRESS = macInput.getText().toString();
+            if (!MW_MAC_ADDRESS.isEmpty() && validateMAC(MW_MAC_ADDRESS)) {
+                connectMW();
+            }
+        });
         findViewById(R.id.play_midi).setOnClickListener(v -> {
             onMidiStart();
         });
@@ -146,18 +160,13 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
         //led.stop(true);
     }
 
-    @Override
-    public void onServiceConnected(ComponentName name, IBinder service) {
-        // Create a connection to the MetaWear board upon service connection
-        BtleService.LocalBinder serviceBinder = (BtleService.LocalBinder) service;
-        BluetoothManager btManager= (BluetoothManager) getSystemService(BLUETOOTH_SERVICE);
-        BluetoothDevice btDevice= btManager.getAdapter().getRemoteDevice(MW_MAC_ADDRESS);
+    public void connectMW() {
+        btDevice= btManager.getAdapter().getRemoteDevice(MW_MAC_ADDRESS);
 
         metaWearBoard = serviceBinder.getMetaWearBoard(btDevice);
-
         metaWearBoard.connectAsync().onSuccessTask(task -> {
             // Configure the LED to blink upon successful async connection
-            /*
+
             led = metaWearBoard.getModule(Led.class);
             led.editPattern(Led.Color.GREEN)
                     .riseTime((short) 0)
@@ -167,7 +176,7 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
                     .highIntensity((byte) 16)
                     .lowIntensity((byte) 16)
                     .commit();
-             */
+
 
             // Configure the accelerometer upon successful async connection
             accelerometer = metaWearBoard.getModule(Accelerometer.class);
@@ -185,12 +194,7 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
             if (conn_task.isFaulted()) {
                 // If connection fails, log and present an AlertDialog indicating failed connection
                 Log.i(LOG_TAG, "Failed to connect.");
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setMessage(R.string.dialog_failed_connection)
-                        .setPositiveButton(R.string.okay, (dialog, which) -> {
-                        });
-                mAlertDialog = builder.create();
-                mAlertDialog.show();
+                alert();
             } else {
                 // If connection is successful, log battery status and begin playing the LED
                 Log.i(LOG_TAG, "Connected to " + metaWearBoard.getModelString());
@@ -210,8 +214,35 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
         });
     }
 
+    private void alert() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        AlertDialog mAlertDialog;
+
+        builder.setMessage(R.string.dialog_failed_connection)
+                .setPositiveButton(R.string.okay, (dialog, which) -> {
+                    dialog.cancel();
+                });
+        mAlertDialog = builder.create();
+        mAlertDialog.show();
+    }
+
+    @Override
+    public void onServiceConnected(ComponentName name, IBinder service) {
+        // Create a connection to the MetaWear board upon service connection
+        serviceBinder = (BtleService.LocalBinder) service;
+        btManager= (BluetoothManager) getSystemService(BLUETOOTH_SERVICE);
+    }
+
     private <T> void addEntry(T value) {
         //TODO add data-points to the series that is being graphed
+    }
+
+    public boolean validateMAC(String mac) {
+        Pattern p = Pattern.compile("^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$");
+        Matcher m = p.matcher(mac);
+        boolean result = m.find();
+        Log.i(LOG_TAG, "MAC " + mac + " -> " + result);
+        return result;
     }
 
     private void showFileChooser() {
