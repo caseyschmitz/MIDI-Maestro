@@ -3,6 +3,7 @@
     package="com.application.midimaestro">
 
     <uses-feature android:name="android.software.midi" android:required="true"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
     <application
         android:allowBackup="true"

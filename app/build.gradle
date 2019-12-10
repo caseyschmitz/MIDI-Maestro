@@ -4,7 +4,7 @@ android {
     compileSdkVersion 29
     buildToolsVersion "29.0.2"
     defaultConfig {
-        applicationId 'com.midimaestro'
+        applicationId 'com.application.midimaestro'
         minSdkVersion 26
         targetSdkVersion 29
         versionCode 1
@@ -32,4 +32,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     implementation 'com.mbientlab:metawear:3.7.1'
     implementation 'com.jjoe64:graphview:4.2.2'
+    implementation 'com.github.LeffelMania:android-midi-lib:master-SNAPSHOT'
+    implementation 'com.github.philburk:android-midisuite:master-SNAPSHOT'
+    implementation project(path: ':MidiDriver-1.17')
 }
