@@ -66,9 +66,6 @@ import org.billthefarmer.mididriver.MidiDriver;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 import bolts.Continuation;
 
@@ -160,6 +157,7 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
 
         metaWearBoard.connectAsync().onSuccessTask(task -> {
             // Configure the LED to blink upon successful async connection
+            /*
             led = metaWearBoard.getModule(Led.class);
             led.editPattern(Led.Color.GREEN)
                     .riseTime((short) 0)
@@ -169,6 +167,7 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
                     .highIntensity((byte) 16)
                     .lowIntensity((byte) 16)
                     .commit();
+             */
 
             // Configure the accelerometer upon successful async connection
             accelerometer = metaWearBoard.getModule(Accelerometer.class);
@@ -192,19 +191,18 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
                         });
                 mAlertDialog = builder.create();
                 mAlertDialog.show();
-                // Disable control buttons if the connection is unsuccessful
-                findViewById(R.id.start_accel).setEnabled(false);
-                findViewById(R.id.stop_accel).setEnabled(false);
-                findViewById(R.id.reset_board).setEnabled(false);
             } else {
                 // If connection is successful, log battery status and begin playing the LED
                 Log.i(LOG_TAG, "Connected to " + metaWearBoard.getModelString());
+                findViewById(R.id.start_accel).setEnabled(true);
+                findViewById(R.id.stop_accel).setEnabled(true);
+                findViewById(R.id.reset_board).setEnabled(true);
 
                 metaWearBoard.readBatteryLevelAsync().continueWith(batt_task -> {
                     Log.i(LOG_TAG, String.valueOf(batt_task.getResult()));
                     return null;
                 });
-                led.play();
+                //led.play();
                 debug = metaWearBoard.getModule(Debug.class);
                 logging = metaWearBoard.getModule(Logging.class);
             }
@@ -219,7 +217,7 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
     private void showFileChooser() {
 
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("*/*");
+        intent.setType("audio/midi");
         startActivityForResult(intent, 01);
 
     }
@@ -230,10 +228,11 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
         if (requestCode == 01) {
             if (resultCode == RESULT_OK) {
                 Uri fileUri = data.getData();
-                //String mimeType = getContentResolver().getType(fileUri);
+                String mimeType = getContentResolver().getType(fileUri);
 
                 String fPath = fileUri.getPath();
 
+                Log.i(LOG_TAG, "File mime-type: " + mimeType);
                 Log.i(LOG_TAG, "File path: " + fPath);
                 Log.i(LOG_TAG, "File string: " + fileUri.toString());
 
@@ -269,7 +268,6 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
         //String text = audioManager.getProperty(AudioManager.PROPERTY_OUTPUT_FRAMES_PER_BUFFER);
         //int framesPerBlock = Integer.parseInt(text);
         //mEngine.setFramesPerBlock(framesPerBlock);
-
 
         EventPrinter mEP = new EventPrinter("Event Listener");
         mProcessor.registerEventListener(mEP, MidiEvent.class);

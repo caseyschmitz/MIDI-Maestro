@@ -41,12 +41,14 @@
         android:layout_height="wrap_content"
         android:text="Start"
         android:layout_below="@id/load_file"
+        android:enabled="false"
         android:id="@+id/start_accel"/>
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Stop"
+        android:enabled="false"
         android:id="@+id/stop_accel"
         android:layout_below="@id/load_file"
         android:layout_toRightOf="@+id/start_accel"
@@ -56,6 +58,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Reset"
+        android:enabled="false"
         android:id="@+id/reset_board"
         android:layout_below="@id/load_file"
         android:layout_toRightOf="@+id/stop_accel"
